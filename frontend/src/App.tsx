@@ -13,7 +13,19 @@ type View = 'landing' | 'main' | 'discussion';
 function App() {
   const [currentView, setCurrentView] = useState<View>('landing');
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyCardData | null>(null);
-  const [chatHistoryByPolicy, setChatHistoryByPolicy] = useState<Record<string, { id: string; role: 'user' | 'assistant'; text: string }[]>>({});
+  const [chatHistoryByPolicy, setChatHistoryByPolicy] = useState<
+    Record<
+      string,
+      {
+        id: string;
+        role: 'user' | 'assistant';
+        text: string;
+        supportingArgumentIds?: string[];
+        modelName?: string;
+        usedFallback?: boolean;
+      }[]
+    >
+  >({});
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [argumentsByPolicyId, setArgumentsByPolicyId] = useState<Record<string, Argument[]>>({});
   const [isLoadingPolicies, setIsLoadingPolicies] = useState(false);

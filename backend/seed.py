@@ -285,6 +285,71 @@ POLICY_BLUEPRINTS = [
             ],
         },
     },
+    {
+        "slug": "grid-decarbonization-acceleration",
+        "title": "Grid Decarbonization Acceleration Programme",
+        "question": "Should the UK accelerate grid decarbonization via contracts and storage mandates?",
+        "description": (
+            "Policy proposal combining long-term contracts, storage requirements, and transmission upgrades "
+            "to reduce power-sector emissions while protecting affordability."
+        ),
+        "status": "published",
+        "domain": "environment",
+        "arguments": {
+            "for": [
+                (
+                    "Long-term contracts lower financing risk for clean generation.",
+                    "Revenue certainty can reduce cost of capital and improve project delivery rates.",
+                ),
+                (
+                    "Storage mandates improve reliability during demand peaks.",
+                    "Flexible reserves reduce curtailment and help integrate variable renewables.",
+                ),
+                (
+                    "Faster transmission upgrades unlock stranded projects.",
+                    "Interconnection bottlenecks currently delay otherwise finance-ready assets.",
+                ),
+                (
+                    "Industrial policy spillovers can strengthen domestic supply chains.",
+                    "Stable demand signals support local manufacturing of grid and storage components.",
+                ),
+                (
+                    "Decarbonization reduces exposure to fossil fuel price shocks.",
+                    "A cleaner generation mix can reduce volatility from imported fuel markets.",
+                ),
+                (
+                    "Clear carbon milestones improve investor confidence.",
+                    "Transparent trajectories support coordinated private and public capital planning.",
+                ),
+            ],
+            "against": [
+                (
+                    "Near-term consumer bills could rise during transition.",
+                    "Network upgrades and contract guarantees may increase system costs before savings materialize.",
+                ),
+                (
+                    "Rapid timelines can strain permitting systems.",
+                    "Planning authorities may become bottlenecks without concurrent administrative reform.",
+                ),
+                (
+                    "Technology lock-in risk is non-trivial.",
+                    "Early commitments to specific storage chemistries could crowd out better future options.",
+                ),
+                (
+                    "Regional equity impacts may be uneven.",
+                    "Infrastructure siting can concentrate local disruption while distributing national benefits.",
+                ),
+                (
+                    "Supply chain constraints may delay delivery.",
+                    "Critical mineral and component bottlenecks can weaken rollout assumptions.",
+                ),
+                (
+                    "System complexity raises implementation risk.",
+                    "Coordinating market design, balancing services, and infrastructure sequencing is operationally difficult.",
+                ),
+            ],
+        },
+    },
 ]
 
 
@@ -316,6 +381,13 @@ EVIDENCE_POOL = {
         "Finland Basic Income Experiment Final Report",
         "Bank of England Household Resilience Bulletin",
         "Resolution Foundation Welfare Simplification Paper",
+    ],
+    "environment": [
+        "National Grid Future Energy Scenarios",
+        "Climate Change Committee Progress Report",
+        "Ofgem Network Investment Consultation",
+        "IEA Electricity Market Review",
+        "UK Energy Security and Net Zero Committee Evidence",
     ],
 }
 

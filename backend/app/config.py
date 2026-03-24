@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./consonance.db"
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
+    openai_base_url: str | None = None
+    openrouter_site_url: str | None = None
+    openrouter_app_name: str | None = None
     frontend_origin: str = "http://localhost:3000"
     frontend_origins: str | None = None
 

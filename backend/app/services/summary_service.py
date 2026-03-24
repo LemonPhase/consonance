@@ -13,16 +13,35 @@ from app.models.summary import PolicySummary
 
 
 POLICY_CHAT_SYSTEM_PROMPT = (
-    "You are the Consonance Policy Analyst.\\n"
-    "Your role is to help users understand a policy using only the provided context.\\n"
-    "Rules:\\n"
-    "1. Use POLICY_CONTEXT as the primary source of truth.\\n"
-    "2. Treat ARGUMENTS as participant claims, not guaranteed facts.\\n"
-    "3. If context is missing, say what is uncertain instead of inventing details.\\n"
-    "4. Be neutral, clear, and concise.\\n"
-    "5. Return strict JSON only with keys: answer, supporting_argument_ids.\\n"
-    "6. supporting_argument_ids must contain only ids present in ARGUMENTS."
+    "You are Consonance Policy Analyst, a neutral assistant that explains policy debates with evidence discipline.\\n"
+    "Use POLICY_CONTEXT as the primary source of truth and ARGUMENTS as claims from participants.\\n"
+    "Do not invent facts, legal details, statistics, or citations.\\n"
+    "When evidence is incomplete, explicitly state uncertainty.\\n"
+    "Prioritize direct, plain-language explanations for public readers.\\n"
+    "Answer quality bar:\\n"
+    "- 2 to 5 concise sentences unless the question requests depth.\\n"
+    "- Include one concrete trade-off when relevant.\\n"
+    "- Avoid advocacy; present balanced framing.\\n"
+    "Output format is strict JSON only with keys: answer, supporting_argument_ids.\\n"
+    "supporting_argument_ids must contain only ids from ARGUMENTS and should reference the most relevant claims."
 )
+
+
+def _build_llm_client() -> OpenAI:
+    client_kwargs: dict[str, object] = {"api_key": settings.openai_api_key}
+
+    if settings.openai_base_url:
+        client_kwargs["base_url"] = settings.openai_base_url
+
+    headers: dict[str, str] = {}
+    if settings.openrouter_site_url:
+        headers["HTTP-Referer"] = settings.openrouter_site_url
+    if settings.openrouter_app_name:
+        headers["X-Title"] = settings.openrouter_app_name
+    if headers:
+        client_kwargs["default_headers"] = headers
+
+    return OpenAI(**client_kwargs)
 
 
 def _build_prompt(policy_question: str, arguments: list[Argument], max_points_per_side: int) -> str:
@@ -148,6 +167,40 @@ def _build_policy_chat_prompt(
     )
 
 
+def _parse_json_response(content: str) -> dict[str, object] | None:
+    try:
+        parsed = json.loads(content)
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        pass
+
+    # Some providers wrap JSON in markdown fences or add short preambles.
+    fenced_start = content.find("```")
+    if fenced_start != -1:
+        fenced_end = content.find("```", fenced_start + 3)
+        if fenced_end != -1:
+            fenced_block = content[fenced_start + 3 : fenced_end].strip()
+            if fenced_block.startswith("json"):
+                fenced_block = fenced_block[4:].strip()
+            try:
+                parsed = json.loads(fenced_block)
+                return parsed if isinstance(parsed, dict) else None
+            except json.JSONDecodeError:
+                pass
+
+    first_obj = content.find("{")
+    last_obj = content.rfind("}")
+    if first_obj != -1 and last_obj != -1 and last_obj > first_obj:
+        candidate = content[first_obj : last_obj + 1]
+        try:
+            parsed = json.loads(candidate)
+            return parsed if isinstance(parsed, dict) else None
+        except json.JSONDecodeError:
+            return None
+
+    return None
+
+
 def _generate_policy_chat_answer(
     policy_title: str,
     policy_question: str,
@@ -164,29 +217,37 @@ def _generate_policy_chat_answer(
             "used_fallback": True,
         }
 
-    client = OpenAI(api_key=settings.openai_api_key)
-    response = client.responses.create(
-        model=settings.openai_model,
-        temperature=0.2,
-        input=[
-            {"role": "system", "content": POLICY_CHAT_SYSTEM_PROMPT},
-            {
-                "role": "user",
-                "content": _build_policy_chat_prompt(
-                    policy_title=policy_title,
-                    policy_question=policy_question,
-                    policy_description=policy_description,
-                    query=query,
-                    arguments=arguments,
-                ),
-            },
-        ],
-    )
+    try:
+        client = _build_llm_client()
+        response = client.responses.create(
+            model=settings.openai_model,
+            temperature=0.2,
+            input=[
+                {"role": "system", "content": POLICY_CHAT_SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": _build_policy_chat_prompt(
+                        policy_title=policy_title,
+                        policy_question=policy_question,
+                        policy_description=policy_description,
+                        query=query,
+                        arguments=arguments,
+                    ),
+                },
+            ],
+        )
+    except Exception:
+        fallback = _fallback_policy_answer(policy_title, policy_question, policy_description, query, arguments)
+        return {
+            "answer": fallback["answer"],
+            "supporting_argument_ids": fallback["supporting_argument_ids"],
+            "model_name": "fallback-ranker",
+            "used_fallback": True,
+        }
 
     content = response.output_text
-    try:
-        parsed = json.loads(content)
-    except json.JSONDecodeError:
+    parsed = _parse_json_response(content)
+    if not parsed:
         fallback = _fallback_policy_answer(policy_title, policy_question, policy_description, query, arguments)
         return {
             "answer": fallback["answer"],
@@ -221,15 +282,18 @@ def _generate_summary_payload(policy_question: str, arguments: list[Argument], m
     if not settings.openai_api_key:
         return _fallback_summary(arguments, max_points_per_side)
 
-    client = OpenAI(api_key=settings.openai_api_key)
-    response = client.responses.create(
-        model=settings.openai_model,
-        temperature=0.2,
-        input=[
-            {"role": "system", "content": "You produce concise structured JSON only."},
-            {"role": "user", "content": _build_prompt(policy_question, arguments, max_points_per_side)},
-        ],
-    )
+    try:
+        client = _build_llm_client()
+        response = client.responses.create(
+            model=settings.openai_model,
+            temperature=0.2,
+            input=[
+                {"role": "system", "content": "You produce concise structured JSON only."},
+                {"role": "user", "content": _build_prompt(policy_question, arguments, max_points_per_side)},
+            ],
+        )
+    except Exception:
+        return _fallback_summary(arguments, max_points_per_side)
 
     content = response.output_text
     try:

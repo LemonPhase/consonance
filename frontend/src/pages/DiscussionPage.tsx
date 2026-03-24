@@ -3,6 +3,7 @@ import { Footer } from '../components/Footer';
 import { ChatBox } from '../components/ChatBox';
 import { PolicyCardData } from '../components/PolicyCard';
 import {
+  askPolicyQuestion,
   castVote,
   createArgument,
   createComment,
@@ -16,6 +17,9 @@ interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   text: string;
+  supportingArgumentIds?: string[];
+  modelName?: string;
+  usedFallback?: boolean;
 }
 
 interface DiscussionPageProps {
@@ -108,6 +112,7 @@ const ArgumentColumn: React.FC<ArgumentColumnProps> = ({
       {argumentsList.map((argument) => (
         <article
           key={argument.id}
+          id={`argument-${argument.id}`}
           className={`border rounded-lg p-4 overflow-hidden shadow-sm ${panelClass}`}
         >
           <div className="flex items-center justify-between mb-2 gap-2">
@@ -213,6 +218,8 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
   onArgumentsChange,
 }) => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>(initialChatHistory);
+  const [isAskingPolicy, setIsAskingPolicy] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
   const [summary, setSummary] = useState<PolicySummary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -260,19 +267,52 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backendPolicyId]);
 
-  const handleChatSubmit = (query: string) => {
-    const userMessage: ChatMessage = { id: `u-${Date.now()}`, role: 'user', text: query };
-    const assistantMessage: ChatMessage = {
-      id: `a-${Date.now()}`,
-      role: 'assistant',
-      text: `Simulated AI response for policy "${policy.title}": ${query}`,
-    };
+  const handleChatSubmit = async (query: string) => {
+    const cleaned = query.trim();
+    if (!cleaned) {
+      return;
+    }
+    if (!backendPolicyId) {
+      setChatError('No backend policy mapped for this discussion.');
+      return;
+    }
 
+    setChatError(null);
+
+    const userMessage: ChatMessage = { id: `u-${Date.now()}`, role: 'user', text: cleaned };
     setChatHistory((prev) => {
-      const next = [...prev, userMessage, assistantMessage];
+      const next = [...prev, userMessage];
       onChatHistoryChange(policy.id, next);
       return next;
     });
+
+    try {
+      setIsAskingPolicy(true);
+      const response = await askPolicyQuestion(backendPolicyId, cleaned);
+
+      const modelInfo = response.used_fallback
+        ? '\n\nFallback mode active.'
+        : `\n\nModel: ${response.model_name}`;
+
+      const assistantMessage: ChatMessage = {
+        id: `a-${Date.now()}`,
+        role: 'assistant',
+        text: `${response.answer}${modelInfo}`,
+        supportingArgumentIds: response.supporting_argument_ids,
+        modelName: response.model_name,
+        usedFallback: response.used_fallback,
+      };
+
+      setChatHistory((prev) => {
+        const next = [...prev, assistantMessage];
+        onChatHistoryChange(policy.id, next);
+        return next;
+      });
+    } catch (error) {
+      setChatError(error instanceof Error ? error.message : 'Failed to get policy answer');
+    } finally {
+      setIsAskingPolicy(false);
+    }
   };
 
   const handleGenerateSummary = async () => {
@@ -392,6 +432,23 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
 
   const forArguments = localArguments.filter((argument) => argument.side === 'for');
   const againstArguments = localArguments.filter((argument) => argument.side === 'against');
+
+  const argumentLabelById = React.useMemo(() => {
+    return Object.fromEntries(
+      localArguments.map((argument) => [
+        argument.id,
+        `${argument.side === 'for' ? 'For' : 'Against'}: ${argument.claim}`,
+      ]),
+    ) as Record<string, string>;
+  }, [localArguments]);
+
+  const formatReferenceLabel = (argumentId: string): string => {
+    const label = argumentLabelById[argumentId];
+    if (!label) {
+      return `Argument ${argumentId.slice(0, 8)}`;
+    }
+    return label.length > 84 ? `${label.slice(0, 84)}...` : label;
+  };
 
   return (
     <div className="bg-surface text-on-surface font-sans selection:bg-secondary-container selection:text-on-secondary-container">
@@ -636,6 +693,14 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
         <section className="mb-10 reveal stagger-3">
           <h2 className="text-2xl font-semibold mb-4">Live discussion & AI assistant</h2>
           <ChatBox onSubmit={handleChatSubmit} />
+          {isAskingPolicy && (
+            <p className="mt-3 text-sm text-on-surface-variant">Assistant is analyzing policy context...</p>
+          )}
+          {chatError && (
+            <p className="mt-3 text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg p-3">
+              {chatError}
+            </p>
+          )}
           <div className="mt-6 space-y-3">
             {chatHistory.map((message) => (
               <div
@@ -648,6 +713,25 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                   {message.role === 'user' ? 'You' : 'Assistant'}
                 </span>
                 <p className="mt-1 text-sm text-on-surface">{message.text}</p>
+                {message.role === 'assistant' && (message.supportingArgumentIds?.length ?? 0) > 0 && (
+                  <div className="mt-3">
+                    <p className="text-[10px] uppercase tracking-wider text-on-surface-variant mb-2">
+                      Related Arguments
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {message.supportingArgumentIds?.map((argumentId) => (
+                        <a
+                          key={`${message.id}-${argumentId}`}
+                          href={`#argument-${argumentId}`}
+                          className="text-xs border border-outline-variant/40 bg-surface px-2 py-1 rounded hover:bg-surface-container-low transition-colors focus-visible:focus-ring"
+                          title={argumentLabelById[argumentId] ?? argumentId}
+                        >
+                          {formatReferenceLabel(argumentId)}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
