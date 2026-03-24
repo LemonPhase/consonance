@@ -398,12 +398,12 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
       <main className="max-w-[1440px] mx-auto px-8 pt-24 pb-24">
         <button
           onClick={onBack}
-          className="mb-6 inline-flex items-center gap-2 bg-surface-container-low text-primary px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors"
+          className="mb-6 inline-flex items-center gap-2 bg-surface-container-low text-primary px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors focus-visible:focus-ring"
         >
           ← Back to ongoing policies
         </button>
 
-        <section className="bg-primary text-white rounded-xl shadow-xl p-8 md:p-10 mb-10 relative overflow-hidden">
+        <section className="bg-primary text-white rounded-xl shadow-xl p-8 md:p-10 mb-10 relative overflow-hidden reveal">
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-secondary-container via-transparent to-transparent" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h1 className="text-4xl font-headline font-bold relative z-10">{policy.title}</h1>
@@ -420,7 +420,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
               href={policy.sourceUrl ?? '#'}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 text-secondary-container hover:text-white transition-colors text-sm"
+              className="inline-flex items-center gap-2 text-secondary-container hover:text-white transition-colors text-sm focus-visible:focus-ring rounded-sm"
             >
               {policy.sourceLabel ?? `${policy.title} Source Material`}
               <span className="text-xs">↗</span>
@@ -482,13 +482,13 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           )}
         </section>
 
-        <section className="bg-surface-container-low rounded-xl p-8 mb-10 border border-outline-variant/20 shadow-sm">
+        <section className="bg-surface-container-low rounded-xl p-8 mb-10 border border-outline-variant/20 shadow-sm reveal stagger-1">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 className="text-2xl font-semibold">AI Debate Summary</h2>
             <button
               onClick={handleGenerateSummary}
               disabled={summaryLoading || !backendPolicyId}
-              className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60"
+              className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60 hover:bg-primary-container transition-colors focus-visible:focus-ring"
             >
               {summaryLoading ? 'Generating...' : 'Generate Summary'}
             </button>
@@ -526,12 +526,12 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           )}
         </section>
 
-        <section className="bg-white rounded-xl shadow p-8 mb-10 border border-outline-variant/20">
+        <section className="bg-white rounded-xl shadow p-8 mb-10 border border-outline-variant/20 reveal stagger-2">
           <div className="flex items-center justify-between gap-3 mb-6">
             <h2 className="text-2xl font-semibold">Structured Arguments</h2>
             <button
               onClick={() => setShowCreateForm((prev) => !prev)}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-container transition-colors"
+              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-container transition-colors focus-visible:focus-ring"
             >
               {showCreateForm ? 'Close' : 'Add Argument'}
             </button>
@@ -554,7 +554,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                   <select
                     value={newArgumentSide}
                     onChange={(event) => setNewArgumentSide(event.target.value as 'for' | 'against')}
-                    className="w-full border border-outline-variant/30 rounded-lg px-3 py-2"
+                    className="w-full border border-outline-variant/30 rounded-lg px-3 py-2 focus-visible:focus-ring"
                   >
                     <option value="for">For</option>
                     <option value="against">Against</option>
@@ -565,7 +565,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                   <input
                     value={newArgumentClaim}
                     onChange={(event) => setNewArgumentClaim(event.target.value)}
-                    className="w-full border border-outline-variant/30 rounded-lg px-3 py-2"
+                    className="w-full border border-outline-variant/30 rounded-lg px-3 py-2 focus-visible:focus-ring"
                     maxLength={280}
                     placeholder="State your claim in one sentence"
                   />
@@ -577,7 +577,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                 <textarea
                   value={newArgumentReasoning}
                   onChange={(event) => setNewArgumentReasoning(event.target.value)}
-                  className="w-full border border-outline-variant/30 rounded-lg px-3 py-2 min-h-[100px]"
+                  className="w-full border border-outline-variant/30 rounded-lg px-3 py-2 min-h-[100px] focus-visible:focus-ring"
                   placeholder="Explain your reasoning"
                 />
               </div>
@@ -585,7 +585,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
               <button
                 type="submit"
                 disabled={isCreatingArgument || !backendPolicyId}
-                className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60 hover:bg-primary-container transition-colors"
+                className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60 hover:bg-primary-container transition-colors focus-visible:focus-ring"
               >
                 {isCreatingArgument ? 'Posting...' : 'Post Argument'}
               </button>
@@ -633,7 +633,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           </div>
         </section>
 
-        <section className="mb-10">
+        <section className="mb-10 reveal stagger-3">
           <h2 className="text-2xl font-semibold mb-4">Live discussion & AI assistant</h2>
           <ChatBox onSubmit={handleChatSubmit} />
           <div className="mt-6 space-y-3">

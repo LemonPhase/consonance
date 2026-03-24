@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArchivePage } from './pages/ArchivePage';
 import { DiscussionPage } from './pages/DiscussionPage';
+import { LandingPage } from './pages/LandingPage';
 import { Header } from './components/Header';
 import { PolicyCardData } from './components/PolicyCard';
 import { fetchArguments, fetchPolicies } from './lib/api';
 import { Argument, Policy } from './types';
 import './globals.css';
 
-type View = 'main' | 'discussion';
+type View = 'landing' | 'main' | 'discussion';
 
 function App() {
-  const [currentView, setCurrentView] = useState<View>('main');
+  const [currentView, setCurrentView] = useState<View>('landing');
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyCardData | null>(null);
   const [chatHistoryByPolicy, setChatHistoryByPolicy] = useState<Record<string, { id: string; role: 'user' | 'assistant'; text: string }[]>>({});
   const [policies, setPolicies] = useState<Policy[]>([]);
@@ -60,7 +61,7 @@ function App() {
 
   const mappedPolicies: PolicyCardData[] = useMemo(
     () =>
-      policies.map((policy, index) => {
+      policies.map((policy) => {
         const args = argumentsByPolicyId[policy.id] ?? [];
         const activeDebaters = new Set(args.map((arg) => arg.author_user_id)).size;
         const citations = args.length;
@@ -83,7 +84,7 @@ function App() {
           statusLabel: statusLabelFromBackend(policy.status),
           citations,
           activeDebaters,
-          isFeatured: policy.slug.includes('national-housing-targets') || index === 0,
+          isFeatured: false,
           isPrimary: false,
           sourceLabel,
           sourceUrl,
@@ -141,7 +142,8 @@ function App() {
 
   return (
     <div className="light">
-      <Header currentView={currentView} onViewChange={setCurrentView} />
+      {currentView !== 'landing' && <Header currentView={currentView} onViewChange={setCurrentView} />}
+      {currentView === 'landing' && <LandingPage onEnterArchive={() => setCurrentView('main')} />}
       {currentView === 'main' && (
         <ArchivePage
           onOpenDiscussion={openPolicyDiscussion}

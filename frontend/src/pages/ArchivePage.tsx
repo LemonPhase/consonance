@@ -45,44 +45,58 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({
       : policies.filter((policy) => matchesFilter(policy.domain, activeFilter));
 
   return (
-    <div className="bg-surface text-on-surface font-sans selection:bg-secondary-container selection:text-on-secondary-container">
-      <main className="min-h-screen pt-24 pb-20 px-8 max-w-7xl mx-auto">
+    <div className="bg-transparent text-on-surface font-sans selection:bg-secondary-container selection:text-on-secondary-container">
+      <main className="min-h-screen pt-24 pb-20 px-8 max-w-7xl mx-auto subtle-grid">
         {/* Hero Section */}
-        <HeroSection
-          title="Consonance: Active Policy Discourse"
-          description="Structured debate where factual claims are evidence-checked and disagreement is mapped."
-        />
+        <div className="reveal">
+          <HeroSection
+            title="Consonance: Active Policy Discourse"
+            description="Structured debate where factual claims are evidence-checked and disagreement is mapped."
+          />
+        </div>
 
         {/* Filters */}
-        <FilterBar options={FILTER_OPTIONS} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+        <div className="reveal stagger-1">
+          <FilterBar options={FILTER_OPTIONS} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+        </div>
 
         {isLoading && (
-          <div className="rounded-lg border border-outline-variant/20 bg-surface-container-low p-6 text-on-surface-variant">
+          <div className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-6 text-on-surface-variant shadow-sm">
             Loading policies...
           </div>
         )}
 
         {errorMessage && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-rose-700">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-rose-700 shadow-sm">
             {errorMessage}
           </div>
         )}
 
         {!isLoading && !errorMessage && (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start auto-rows-fr">
-            {filteredPolicies.map((policy) => (
-              <PolicyCard
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start auto-rows-fr">
+            {filteredPolicies.map((policy, index) => (
+              <div
                 key={policy.id}
-                policy={policy}
-                onViewDebate={() => onOpenDiscussion(policy.id)}
-              />
+                className={`md:col-span-4 reveal stagger-${Math.min(index + 1, 6)}`}
+              >
+                <PolicyCard
+                  policy={policy}
+                  onViewDebate={() => onOpenDiscussion(policy.id)}
+                />
+              </div>
             ))}
+          </div>
+        )}
+
+        {!isLoading && !errorMessage && filteredPolicies.length === 0 && (
+          <div className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-8 text-center text-on-surface-variant shadow-sm">
+            No policies in this domain yet.
           </div>
         )}
       </main>
 
       {/* Decorative SVG Element */}
-      <div className="fixed top-0 right-0 -z-10 w-1/3 h-screen pointer-events-none opacity-5">
+      <div className="fixed top-0 right-0 -z-10 w-1/3 h-screen pointer-events-none opacity-10">
         <svg className="h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100">
           <path
             className="text-secondary"

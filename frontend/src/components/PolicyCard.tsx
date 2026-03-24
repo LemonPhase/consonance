@@ -57,143 +57,9 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
     }
   };
 
-  // Featured card layout
-  if (policy.isFeatured) {
-    return (
-      <div className="md:col-span-8 bg-surface-container-lowest p-8 flex flex-col justify-between min-h-[400px] group transition-all duration-300 relative overflow-hidden rounded-xl border border-outline-variant/20 shadow-sm">
-        <div className="absolute top-0 right-0 p-8">
-          <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">
-            Domain
-          </span>
-          <span className="font-body font-semibold text-primary">{policy.domain}</span>
-        </div>
-
-        <div>
-          <div className={`inline-flex items-center gap-2 ${getStatusColor(policy.status)} px-3 py-1 rounded-full mb-6`}>
-            {policy.status === 'active-disagreement' && (
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            )}
-            {getStatusIcon(policy.status) && (
-              <MaterialIcon icon={getStatusIcon(policy.status)!} size="sm" />
-            )}
-            <span className="font-label text-xs font-bold uppercase tracking-tighter">
-              {policy.statusLabel}
-            </span>
-          </div>
-
-          <h2
-            onClick={() => onViewDebate?.(policy.id)}
-            className="font-headline text-4xl font-bold text-primary mb-6 group-hover:text-secondary transition-colors cursor-pointer"
-          >
-            {policy.title}
-          </h2>
-
-          <p className="font-body text-lg text-on-surface-variant max-w-xl mb-8 leading-relaxed">
-            {policy.description}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div className="flex gap-12">
-            <div>
-              <span className="block font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">
-                Citations
-              </span>
-              <span className="font-headline text-2xl font-bold text-primary">
-                {policy.citations.toLocaleString()}
-              </span>
-            </div>
-            <div>
-              <span className="block font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">
-                Active Debaters
-              </span>
-              <span className="font-headline text-2xl font-bold text-primary">
-                {policy.activeDebaters.toLocaleString()}
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => onViewDebate?.(policy.id)}
-            className="bg-secondary-fixed text-on-secondary-fixed px-8 py-3 rounded-lg font-label font-bold flex items-center gap-2 hover:bg-secondary-container transition-all group/btn"
-          >
-            View Debate
-            <MaterialIcon icon="arrow_forward" className="group-hover/btn:translate-x-1 transition-transform" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Primary dark card layout
-  if (policy.isPrimary) {
-    return (
-      <div className="md:col-span-8 bg-primary text-white p-12 relative overflow-hidden flex flex-col md:flex-row gap-12 items-center">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-secondary-container via-transparent to-transparent"></div>
-
-        <div className="relative z-10 flex-1">
-          <span className="font-label text-xs uppercase tracking-widest text-slate-400 mb-2 block">
-            {policy.domain}
-          </span>
-
-          <div className={`inline-flex items-center gap-2 ${getStatusColor(policy.status)} px-3 py-1 rounded-full mb-6`}>
-            {getStatusIcon(policy.status) && (
-              <MaterialIcon icon={getStatusIcon(policy.status)!} size="sm" />
-            )}
-            <span className="font-label text-xs font-bold uppercase tracking-tighter">
-              {policy.statusLabel}
-            </span>
-          </div>
-
-          <h3
-            onClick={() => onViewDebate?.(policy.id)}
-            className="font-headline text-4xl font-bold mb-4 cursor-pointer hover:text-secondary-container transition-colors"
-          >
-            {policy.title}
-          </h3>
-
-          <p className="font-body text-slate-300 text-lg leading-relaxed mb-8">
-            {policy.description}
-          </p>
-
-          <div className="flex gap-10">
-            <div>
-              <span className="font-headline text-3xl font-bold text-secondary-container">
-                {policy.citations.toLocaleString()}
-              </span>
-              <span className="block font-label text-xs text-slate-400 uppercase tracking-widest">
-                Citations
-              </span>
-            </div>
-            <div>
-              <span className="font-headline text-3xl font-bold text-secondary-container">
-                {policy.activeDebaters.toLocaleString()}
-              </span>
-              <span className="block font-label text-xs text-slate-400 uppercase tracking-widest">
-                Active Debaters
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 flex flex-col gap-4 w-full md:w-auto">
-          <button
-            onClick={() => onViewDebate?.(policy.id)}
-            className="bg-secondary-fixed text-on-secondary-fixed px-10 py-4 rounded-lg font-label font-extrabold hover:scale-105 transition-transform whitespace-nowrap shadow-xl"
-          >
-            View Full Debate
-          </button>
-          <p className="text-[10px] text-slate-400 font-label uppercase text-center tracking-widest">
-            Updated 2 hours ago
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Default card
   return (
-      <div className="md:col-span-4 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 flex flex-col min-h-[360px] shadow-sm hover:shadow-md transition-shadow h-full">
+    <article className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-7 flex flex-col min-h-[380px] shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 h-full relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-secondary-container" />
       <div className="flex items-center justify-between gap-3 mb-4">
         <span className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">
           {policy.domain}
@@ -206,12 +72,12 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
 
       <h3
         onClick={() => onViewDebate?.(policy.id)}
-        className="font-headline text-2xl font-bold text-primary leading-tight mb-4 cursor-pointer hover:text-secondary transition-colors"
+        className="font-headline text-2xl font-bold text-primary leading-tight mb-3 cursor-pointer hover:text-secondary transition-colors"
       >
         {policy.title}
       </h3>
 
-      <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-8 flex-grow">
+      <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6 flex-grow">
         {policy.description}
       </p>
 
@@ -220,21 +86,21 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
           href={policy.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="mb-4 inline-flex items-center gap-2 text-xs text-secondary hover:text-primary transition-colors"
+          className="mb-4 inline-flex items-center gap-2 text-xs text-secondary hover:text-primary transition-colors focus-visible:focus-ring rounded-sm"
         >
           {policy.sourceLabel}
           <span>↗</span>
         </a>
       )}
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-surface-container-low p-3 rounded-lg">
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/20">
           <span className="block font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
             Citations
           </span>
           <span className="font-headline text-xl font-bold text-primary">{policy.citations.toLocaleString()}</span>
         </div>
-        <div className="bg-surface-container-low p-3 rounded-lg">
+        <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/20">
           <span className="block font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
             Debaters
           </span>
@@ -276,10 +142,10 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
 
       <button
         onClick={() => onViewDebate?.(policy.id)}
-        className="w-full bg-primary text-white py-3 rounded-lg font-label font-bold hover:bg-primary-container transition-colors"
+        className="w-full bg-primary text-white py-3 rounded-lg font-label font-bold hover:bg-primary-container transition-colors focus-visible:focus-ring"
       >
         View Debate
       </button>
-    </div>
+    </article>
   );
 };
