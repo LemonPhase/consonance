@@ -12,37 +12,37 @@ FastAPI backend for the Consonance MVP.
 
 ## Quick start
 
-1. Create and activate a virtual environment:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-2. Install dependencies:
-
-```bash
-python -m pip install -e ".[dev]"
-```
-
-3. Create env file:
+1. Create env file:
 
 ```bash
 cp .env.example .env
 ```
 
-4. Run the API:
+2. Sync dependencies with uv:
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+uv sync --extra dev
+```
+
+3. Run the API:
+
+```bash
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 Health check: `GET http://localhost:8000/healthz`
 
+If you prefer an isolated in-project virtual env, run:
+
+```bash
+uv venv
+uv sync --extra dev
+```
+
 ## Seed demo data
 
 ```bash
-python seed.py
+uv run python seed.py
 ```
 
 This inserts sample policies and arguments if the database is empty.
@@ -77,7 +77,7 @@ If `OPENAI_API_KEY` is missing, summary generation uses a deterministic fallback
 Run:
 
 ```bash
-pytest
+uv run pytest
 ```
 
 ## Alembic migrations
@@ -85,17 +85,17 @@ pytest
 Create revision from models:
 
 ```bash
-alembic revision --autogenerate -m "init"
+uv run alembic revision --autogenerate -m "init"
 ```
 
 Apply latest migration:
 
 ```bash
-alembic upgrade head
+uv run alembic upgrade head
 ```
 
 Rollback one migration:
 
 ```bash
-alembic downgrade -1
+uv run alembic downgrade -1
 ```

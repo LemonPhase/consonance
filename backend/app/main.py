@@ -32,6 +32,16 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {
+        "name": "Consonance MVP API",
+        "status": "ok",
+        "docs": "/docs",
+        "health": "/healthz",
+    }
+
+
 @app.get("/healthz")
 async def healthz() -> dict[str, str]:
     return {"status": "ok"}

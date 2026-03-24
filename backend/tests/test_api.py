@@ -21,6 +21,10 @@ def test_mvp_flow(tmp_path, monkeypatch):
     app = _fresh_app(monkeypatch, str(tmp_path / "test.db"))
 
     with TestClient(app) as client:
+        root = client.get("/")
+        assert root.status_code == 200
+        assert root.json()["name"] == "Consonance MVP API"
+
         health = client.get("/healthz")
         assert health.status_code == 200
         assert health.json()["status"] == "ok"
