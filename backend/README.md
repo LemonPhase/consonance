@@ -53,6 +53,7 @@ This inserts sample policies and arguments if the database is empty.
 - `OPENAI_API_KEY` (optional)
 - `OPENAI_MODEL` (default: `gpt-4o-mini`)
 - `FRONTEND_ORIGIN` (default: `http://localhost:3000`)
+- `FRONTEND_ORIGINS` (optional CSV, e.g. `http://localhost:3000,http://127.0.0.1:3000`)
 
 If `OPENAI_API_KEY` is missing, summary generation uses a deterministic fallback ranker.
 

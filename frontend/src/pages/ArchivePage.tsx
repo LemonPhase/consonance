@@ -13,66 +13,25 @@ const FILTER_OPTIONS: FilterOption[] = [
   { id: 'environment', label: 'Environment' },
 ];
 
-const POLICIES: PolicyCardData[] = [
-  {
-    id: '1',
-    title: 'National Housing Targets',
-    description:
-      'A critical examination of proposed mandatory quotas versus local planning autonomy, analyzing current supply chain constraints and long-term affordability metrics.',
-    domain: 'Housing',
-    status: 'active-disagreement',
-    statusLabel: 'Active Expert Disagreement',
-    citations: 1204,
-    activeDebaters: 892,
-    isFeatured: true,
-  },
-  {
-    id: '2',
-    title: 'Levelling Up White Paper 2025 Evaluation',
-    description:
-      'Analysis of regional investment outcomes and infrastructure impact since the UK Levelling Up White Paper, with metrics on jobs, connectivity, and transport access gaps.',
-    domain: 'Education',
-    status: 'settled',
-    statusLabel: 'Broadly Settled (Empirical)',
-    citations: 650,
-    activeDebaters: 340,
-  },
-  {
-    id: '3',
-    title: 'NHS Private Tutoring Subsidies',
-    description:
-      'Modeling the impact of external staffing support on permanent workforce retention and service delivery speeds.',
-    domain: 'Healthcare',
-    status: 'uncertain',
-    statusLabel: 'Highly Uncertain (Predictive)',
-    citations: 98,
-    activeDebaters: 45,
-  },
-  {
-    id: '4',
-    title: 'Universal Basic Income Pilot',
-    description:
-      'The definitive debate on post-work socioeconomic frameworks, evaluating trials from Finland to Kenya.',
-    domain: 'Economy',
-    status: 'opinion',
-    statusLabel: 'Opinion / Value Judgment',
-    citations: 3410,
-    activeDebaters: 1200,
-    isPrimary: true,
-  },
-];
-
 interface ArchivePageProps {
   onOpenDiscussion: (policyId: string) => void;
+  policies: PolicyCardData[];
+  isLoading?: boolean;
+  errorMessage?: string | null;
 }
 
-export const ArchivePage: React.FC<ArchivePageProps> = ({ onOpenDiscussion }) => {
+export const ArchivePage: React.FC<ArchivePageProps> = ({
+  onOpenDiscussion,
+  policies,
+  isLoading = false,
+  errorMessage = null,
+}) => {
   const [activeFilter, setActiveFilter] = useState('all');
 
   const filteredPolicies =
     activeFilter === 'all'
-      ? POLICIES
-      : POLICIES.filter(
+      ? policies
+      : policies.filter(
           (policy) => policy.domain.toLowerCase() === activeFilter.toLowerCase()
         );
 
@@ -88,16 +47,29 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onOpenDiscussion }) =>
         {/* Filters */}
         <FilterBar options={FILTER_OPTIONS} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
-        {/* Policy Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-          {filteredPolicies.map((policy) => (
-            <PolicyCard
-              key={policy.id}
-              policy={policy}
-              onViewDebate={() => onOpenDiscussion(policy.id)}
-            />
-          ))}
-        </div>
+        {isLoading && (
+          <div className="rounded-lg border border-outline-variant/20 bg-surface-container-low p-6 text-on-surface-variant">
+            Loading policies...
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-rose-700">
+            {errorMessage}
+          </div>
+        )}
+
+        {!isLoading && !errorMessage && (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            {filteredPolicies.map((policy) => (
+              <PolicyCard
+                key={policy.id}
+                policy={policy}
+                onViewDebate={() => onOpenDiscussion(policy.id)}
+              />
+            ))}
+          </div>
+        )}
       </main>
 
       {/* Decorative SVG Element */}

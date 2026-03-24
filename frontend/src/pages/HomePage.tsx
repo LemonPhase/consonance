@@ -91,7 +91,7 @@ const CHALLENGES: Evidence[] = [
 ];
 
 export const HomePage: React.FC = () => {
-  const [queryResponse, setQueryResponse] = useState<string | null>(null);
+  const [, setQueryResponse] = useState<string | null>(null);
 
   const handleChatSubmit = (query: string) => {
     console.log('Query submitted:', query);

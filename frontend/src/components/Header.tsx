@@ -1,13 +1,15 @@
 import React from 'react';
 import { MaterialIcon } from './MaterialIcon';
-import { NavLink } from '../types/index';
 
 interface HeaderProps {
-  currentView: 'main' | 'discussion';
-  onViewChange: (view: 'main' | 'discussion') => void;
+  currentView?: 'main' | 'discussion';
+  onViewChange?: (view: 'main' | 'discussion') => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
+export const Header: React.FC<HeaderProps> = ({
+  currentView = 'main',
+  onViewChange = () => undefined,
+}) => {
   const navLinks = [
     { label: 'Ongoing Policies', view: 'main' as const },
     { label: 'Discussion', view: 'discussion' as const },
