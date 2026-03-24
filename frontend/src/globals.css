@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;700&family=Inter:wght@400;500;700&family=Work+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+body {
+  @apply font-sans antialiased;
+}
+
+/* Paper texture background optional */
+.paper-texture {
+  background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuC4FvmmBBxoTnPiRVOWr6qGkP532GGtTm-dcOo82tuuwPoVPNcv7aDXYRbBdW0fvPwumxQm-oI720ba3P1tWFduTZgApplGqQGZYv_MJPQ8-e_MkVsq3TvfcE6Jh-wKCXuvf5krDJaKHrLLivMo-ElfveSCD37IyumVpIBFoZEllu-MZc5EPgT9Rv89aLPSSJSD5m4tCtOGHnaH9ffZi593ddDXwFjAqFWmW4XHqW36j-2VJGFPO6f39I0k5xbbzip2k_qDSaV7AZHx);
+}
