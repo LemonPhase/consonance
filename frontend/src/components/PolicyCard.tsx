@@ -53,7 +53,7 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
   // Featured card layout
   if (policy.isFeatured) {
     return (
-      <div className="md:col-span-8 bg-surface-container-lowest p-8 flex flex-col justify-between min-h-[400px] group transition-all duration-300 relative overflow-hidden">
+      <div className="md:col-span-8 bg-surface-container-lowest p-8 flex flex-col justify-between min-h-[400px] group transition-all duration-300 relative overflow-hidden rounded-xl border border-outline-variant/20 shadow-sm">
         <div className="absolute top-0 right-0 p-8">
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">
             Domain
@@ -74,7 +74,10 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
             </span>
           </div>
 
-          <h2 className="font-headline text-4xl font-bold text-primary mb-6 group-hover:text-secondary transition-colors cursor-pointer">
+          <h2
+            onClick={() => onViewDebate?.(policy.id)}
+            className="font-headline text-4xl font-bold text-primary mb-6 group-hover:text-secondary transition-colors cursor-pointer"
+          >
             {policy.title}
           </h2>
 
@@ -135,7 +138,12 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
             </span>
           </div>
 
-          <h3 className="font-headline text-4xl font-bold mb-4">{policy.title}</h3>
+          <h3
+            onClick={() => onViewDebate?.(policy.id)}
+            className="font-headline text-4xl font-bold mb-4 cursor-pointer hover:text-secondary-container transition-colors"
+          >
+            {policy.title}
+          </h3>
 
           <p className="font-body text-slate-300 text-lg leading-relaxed mb-8">
             {policy.description}
@@ -178,7 +186,7 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
 
   // Default card
   return (
-    <div className="md:col-span-4 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 flex flex-col min-h-[360px] shadow-sm hover:shadow-md transition-shadow">
+      <div className="md:col-span-4 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 flex flex-col min-h-[360px] shadow-sm hover:shadow-md transition-shadow h-full">
       <div className="flex items-center justify-between gap-3 mb-4">
         <span className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">
           {policy.domain}

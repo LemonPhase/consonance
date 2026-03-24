@@ -52,6 +52,30 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
   const [loadingCommentsByArgument, setLoadingCommentsByArgument] = useState<Record<string, boolean>>({});
   const [newCommentByArgument, setNewCommentByArgument] = useState<Record<string, string>>({});
 
+  const parseSourceChips = (sourceText?: string | null): Array<{ title: string; url: string }> => {
+    if (!sourceText || !sourceText.startsWith('Sources: ')) {
+      return [];
+    }
+
+    const content = sourceText.replace('Sources: ', '').trim();
+    if (!content) {
+      return [];
+    }
+
+    return content
+      .split(';')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const [title, url] = entry.split('|');
+        return {
+          title: (title ?? '').trim(),
+          url: (url ?? '').trim(),
+        };
+      })
+      .filter((chip) => chip.title.length > 0 && chip.url.length > 0);
+  };
+
   React.useEffect(() => {
     setLocalArguments(argumentsList);
   }, [argumentsList]);
@@ -365,14 +389,14 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           {localArguments.length === 0 ? (
             <p className="text-sm text-on-surface-variant">No arguments yet for this policy.</p>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                   <h3 className="font-label text-xs uppercase tracking-widest text-emerald-700">For ({forArguments.length})</h3>
                 </div>
                 {forArguments.map((arg) => (
-                  <article key={arg.id} className="border border-emerald-100 bg-emerald-50/40 rounded-lg p-4">
+                  <article key={arg.id} className="border border-emerald-100 bg-emerald-50/40 rounded-lg p-4 overflow-hidden">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs uppercase tracking-wider text-emerald-700">FOR</span>
                       <div className="flex items-center gap-2">
@@ -392,6 +416,24 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                     </div>
                     <h3 className="font-semibold mb-1">{arg.claim}</h3>
                     <p className="text-sm text-on-surface-variant">{arg.reasoning}</p>
+                    {parseSourceChips(arg.counterarguments_addressed).length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-[10px] uppercase tracking-widest text-emerald-700 mb-2">Sources</p>
+                        <div className="flex flex-wrap gap-2">
+                          {parseSourceChips(arg.counterarguments_addressed).map((chip, index) => (
+                            <a
+                              key={`${arg.id}-for-source-${index}`}
+                              href={chip.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[11px] bg-white border border-emerald-200 text-emerald-700 px-2 py-1 rounded hover:bg-emerald-50"
+                            >
+                              {chip.title}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="mt-4">
                       <button
                         onClick={() => void toggleArgumentComments(arg.id)}
@@ -450,7 +492,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                   <h3 className="font-label text-xs uppercase tracking-widest text-rose-700">Against ({againstArguments.length})</h3>
                 </div>
                 {againstArguments.map((arg) => (
-                  <article key={arg.id} className="border border-rose-100 bg-rose-50/40 rounded-lg p-4">
+                  <article key={arg.id} className="border border-rose-100 bg-rose-50/40 rounded-lg p-4 overflow-hidden">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs uppercase tracking-wider text-rose-700">AGAINST</span>
                     <div className="flex items-center gap-2">
@@ -468,9 +510,27 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                       </button>
                     </div>
                   </div>
-                  <h3 className="font-semibold mb-1">{arg.claim}</h3>
-                  <p className="text-sm text-on-surface-variant">{arg.reasoning}</p>
-                  <div className="mt-4">
+                    <h3 className="font-semibold mb-1">{arg.claim}</h3>
+                    <p className="text-sm text-on-surface-variant">{arg.reasoning}</p>
+                    {parseSourceChips(arg.counterarguments_addressed).length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-[10px] uppercase tracking-widest text-rose-700 mb-2">Sources</p>
+                        <div className="flex flex-wrap gap-2">
+                          {parseSourceChips(arg.counterarguments_addressed).map((chip, index) => (
+                            <a
+                              key={`${arg.id}-against-source-${index}`}
+                              href={chip.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[11px] bg-white border border-rose-200 text-rose-700 px-2 py-1 rounded hover:bg-rose-50"
+                            >
+                              {chip.title}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div className="mt-4">
                     <button
                       onClick={() => void toggleArgumentComments(arg.id)}
                       className="text-xs text-primary hover:underline"

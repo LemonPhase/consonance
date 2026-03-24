@@ -7,6 +7,7 @@ from app.database import Base, SessionLocal, engine
 from app.models.argument import Argument
 from app.models.comment import Comment
 from app.models.policy import Policy
+from app.models.source import Source
 from app.models.summary import PolicySummary
 from app.models.vote import Vote
 from app.services.summary_service import generate_policy_summary
@@ -287,6 +288,38 @@ POLICY_BLUEPRINTS = [
 ]
 
 
+EVIDENCE_POOL = {
+    "housing": [
+        "CMA Housebuilding Market Study (2024)",
+        "DLUHC Housing Supply Statistics (2023)",
+        "ONS Private Rental Price Index (2024)",
+        "LSE Housing Elasticity Working Paper",
+        "National Infrastructure Commission Capacity Note",
+    ],
+    "education": [
+        "ONS Regional Productivity Release (2024)",
+        "DfE Skills Bootcamps Progress Report",
+        "NAO Levelling Up Programme Review",
+        "Institute for Government Devolution Tracker",
+        "Treasury Green Book Place-Based Evaluation Annex",
+    ],
+    "healthcare": [
+        "NHS England Referral to Treatment Statistics",
+        "Health Foundation Workforce Analysis",
+        "King's Fund Agency Staffing Brief",
+        "BMJ Waiting List Outcome Study",
+        "Nuffield Trust Elective Recovery Review",
+    ],
+    "economy": [
+        "IFS Distributional Impact Brief",
+        "OECD Income Support Policy Survey",
+        "Finland Basic Income Experiment Final Report",
+        "Bank of England Household Resilience Bulletin",
+        "Resolution Foundation Welfare Simplification Paper",
+    ],
+}
+
+
 def status_to_card_status(status: str) -> tuple[str, str]:
     if status == "published":
         return ("active-disagreement", "Active Expert Disagreement")
@@ -301,6 +334,7 @@ async def clear_existing_data() -> None:
         await session.execute(delete(Vote))
         await session.execute(delete(PolicySummary))
         await session.execute(delete(Argument))
+        await session.execute(delete(Source))
         await session.execute(delete(Policy))
         await session.commit()
 
@@ -332,17 +366,44 @@ async def seed() -> None:
 
         for blueprint, policy in zip(POLICY_BLUEPRINTS, created_policies):
             policy_arguments: list[Argument] = []
+            policy_sources = EVIDENCE_POOL.get(blueprint["domain"], [])
+            policy_source_records: list[tuple[str, str]] = []
+
+            for source_title in policy_sources:
+                source_url = f"https://example.org/{blueprint['slug']}/{source_title.lower().replace(' ', '-')}"
+                policy_source_records.append((source_title, source_url))
+                session.add(
+                    Source(
+                        url=source_url,
+                        title=source_title,
+                        publisher="Consonance Demo Corpus",
+                        source_type="independent_analysis",
+                        credibility_score=round(random.uniform(0.68, 0.93), 2),
+                        created_by_user_id="mock-user-001",
+                    )
+                )
 
             for side in ("for", "against"):
                 for claim, reasoning in blueprint["arguments"][side]:
                     upvotes = random.randint(18, 220)
                     downvotes = random.randint(4, 70)
+                    include_sources = random.random() < 0.62
+                    source_count = random.randint(1, 2) if include_sources else 0
+                    selected_sources = (
+                        random.sample(policy_source_records, k=source_count) if source_count else []
+                    )
+                    source_note = (
+                        "Sources: " + "; ".join(f"{title}|{url}" for title, url in selected_sources)
+                        if selected_sources
+                        else None
+                    )
                     argument = Argument(
                         policy_id=policy.id,
                         author_user_id=random.choice(SEED_USER_IDS),
                         side=side,
                         claim=claim,
                         reasoning=reasoning,
+                        counterarguments_addressed=source_note,
                         status="active",
                         quality_score=random.randint(58, 92),
                         ai_clarity_score=round(random.uniform(0.62, 0.94), 2),
