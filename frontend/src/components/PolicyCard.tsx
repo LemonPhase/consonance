@@ -115,99 +115,6 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
     );
   }
 
-  // Small card with border-left
-  if (policy.domain === 'Education') {
-    return (
-      <div className="md:col-span-4 bg-surface-container-low p-8 h-full flex flex-col border-l-4 border-emerald-500/20">
-        <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">
-          {policy.domain}
-        </span>
-
-        <div className={`inline-flex items-center gap-2 ${getStatusColor(policy.status)} px-3 py-1 rounded-full mb-4 w-fit`}>
-          {getStatusIcon(policy.status) && (
-            <MaterialIcon icon={getStatusIcon(policy.status)!} size="sm" />
-          )}
-          <span className="font-label text-xs font-bold uppercase tracking-tighter">
-            {policy.statusLabel}
-          </span>
-        </div>
-
-        <h3 className="font-headline text-2xl font-bold text-primary mb-4 leading-tight">
-          {policy.title}
-        </h3>
-
-        <p className="font-body text-sm text-on-surface-variant mb-8 flex-grow">
-          {policy.description}
-        </p>
-
-        <div className="space-y-4 mb-8">
-          <div className="flex justify-between border-b border-outline-variant/20 pb-2">
-            <span className="font-label text-xs text-on-surface-variant uppercase">Citations</span>
-            <span className="font-body font-bold text-primary">{policy.citations.toLocaleString()}</span>
-          </div>
-          <div className="flex justify-between border-b border-outline-variant/20 pb-2">
-            <span className="font-label text-xs text-on-surface-variant uppercase">Active Debaters</span>
-            <span className="font-body font-bold text-primary">{policy.activeDebaters.toLocaleString()}</span>
-          </div>
-        </div>
-
-        <button
-          onClick={() => onViewDebate?.(policy.id)}
-          className="w-full py-3 border border-primary text-primary font-label font-bold hover:bg-primary hover:text-white transition-colors"
-        >
-          View Debate
-        </button>
-      </div>
-    );
-  }
-
-  // Healthcare card with border-top
-  if (policy.domain === 'Healthcare') {
-    return (
-      <div className="md:col-span-4 bg-surface-container-lowest p-8 flex flex-col shadow-sm border-t-2 border-primary">
-        <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">
-          {policy.domain}
-        </span>
-
-        <div className={`inline-flex items-center gap-2 ${getStatusColor(policy.status)} px-3 py-1 rounded-full mb-4 w-fit`}>
-          {getStatusIcon(policy.status) && (
-            <MaterialIcon icon={getStatusIcon(policy.status)!} size="sm" />
-          )}
-          <span className="font-label text-xs font-bold uppercase tracking-tighter">
-            {policy.statusLabel}
-          </span>
-        </div>
-
-        <h3 className="font-headline text-2xl font-bold text-primary mb-4">
-          {policy.title}
-        </h3>
-
-        <p className="font-body text-sm text-on-surface-variant mb-8 flex-grow">
-          {policy.description}
-        </p>
-
-        <div className="flex items-center justify-between mt-auto">
-          <div className="flex flex-col">
-            <span className="font-headline text-xl font-bold text-primary">
-              {policy.citations.toLocaleString()}
-            </span>
-            <span className="font-label text-[10px] text-on-surface-variant uppercase tracking-tighter">
-              Citations
-            </span>
-          </div>
-
-          <button
-            onClick={() => onViewDebate?.(policy.id)}
-            className="text-secondary font-label font-bold flex items-center gap-1 hover:underline"
-          >
-            Explore
-            <MaterialIcon icon="open_in_new" size="sm" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // Primary dark card layout
   if (policy.isPrimary) {
     return (
@@ -270,5 +177,52 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
   }
 
   // Default card
-  return <div className="bg-surface-container-low p-6 rounded-lg">{policy.title}</div>;
+  return (
+    <div className="md:col-span-4 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-8 flex flex-col min-h-[360px] shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <span className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">
+          {policy.domain}
+        </span>
+        <div className={`inline-flex items-center gap-1.5 ${getStatusColor(policy.status)} px-2.5 py-1 rounded-full`}>
+          {getStatusIcon(policy.status) && <MaterialIcon icon={getStatusIcon(policy.status)!} size="sm" />}
+          <span className="font-label text-[10px] font-bold uppercase tracking-tight">{policy.statusLabel}</span>
+        </div>
+      </div>
+
+      <h3
+        onClick={() => onViewDebate?.(policy.id)}
+        className="font-headline text-2xl font-bold text-primary leading-tight mb-4 cursor-pointer hover:text-secondary transition-colors"
+      >
+        {policy.title}
+      </h3>
+
+      <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-8 flex-grow">
+        {policy.description}
+      </p>
+
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-surface-container-low p-3 rounded-lg">
+          <span className="block font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
+            Citations
+          </span>
+          <span className="font-headline text-xl font-bold text-primary">{policy.citations.toLocaleString()}</span>
+        </div>
+        <div className="bg-surface-container-low p-3 rounded-lg">
+          <span className="block font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
+            Debaters
+          </span>
+          <span className="font-headline text-xl font-bold text-primary">
+            {policy.activeDebaters.toLocaleString()}
+          </span>
+        </div>
+      </div>
+
+      <button
+        onClick={() => onViewDebate?.(policy.id)}
+        className="w-full bg-primary text-white py-3 rounded-lg font-label font-bold hover:bg-primary-container transition-colors"
+      >
+        View Debate
+      </button>
+    </div>
+  );
 };

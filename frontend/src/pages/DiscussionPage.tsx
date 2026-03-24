@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { PolicyCardData } from '../components/PolicyCard';
-import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { ChatBox } from '../components/ChatBox';
 import {
@@ -215,42 +214,53 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
     }
   };
 
+  const forArguments = localArguments.filter((argument) => argument.side === 'for');
+  const againstArguments = localArguments.filter((argument) => argument.side === 'against');
+
   return (
     <div className="bg-surface text-on-surface font-sans selection:bg-secondary-container selection:text-on-secondary-container">
-      <Header currentView="discussion" onViewChange={() => {}} />
       <main className="max-w-[1440px] mx-auto px-8 pt-24 pb-24">
         <button
           onClick={onBack}
-          className="mb-6 inline-flex items-center gap-2 bg-surface-container-low text-primary px-4 py-2 rounded-lg border border-outline-variant"
+          className="mb-6 inline-flex items-center gap-2 bg-surface-container-low text-primary px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors"
         >
           ← Back to ongoing policies
         </button>
 
-        <section className="bg-white rounded-xl shadow p-8 mb-10">
+        <section className="bg-primary text-white rounded-xl shadow-xl p-8 md:p-10 mb-10 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-secondary-container via-transparent to-transparent" />
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h1 className="text-4xl font-headline font-bold">{policy.title}</h1>
-            <span className="text-xs font-label uppercase tracking-wider text-on-surface-variant">
+            <h1 className="text-4xl font-headline font-bold relative z-10">{policy.title}</h1>
+            <span className="text-xs font-label uppercase tracking-wider text-secondary-container relative z-10">
               {policy.domain}
             </span>
           </div>
 
-          <p className="mt-4 text-on-surface-variant leading-relaxed">
+          <p className="mt-4 text-slate-200 leading-relaxed max-w-4xl relative z-10">
             {policy.description}
           </p>
 
-          <div className="mt-6 flex gap-8">
-            <div>
-              <span className="block font-label text-xs text-on-surface-variant uppercase">Citations</span>
-              <span className="font-headline text-2xl font-bold">{policy.citations.toLocaleString()}</span>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+            <div className="bg-white/10 border border-white/10 rounded-lg p-4">
+              <span className="block font-label text-xs text-slate-300 uppercase tracking-widest">Citations</span>
+              <span className="font-headline text-2xl font-bold text-secondary-container">{policy.citations.toLocaleString()}</span>
             </div>
-            <div>
-              <span className="block font-label text-xs text-on-surface-variant uppercase">Active Debaters</span>
-              <span className="font-headline text-2xl font-bold">{policy.activeDebaters.toLocaleString()}</span>
+            <div className="bg-white/10 border border-white/10 rounded-lg p-4">
+              <span className="block font-label text-xs text-slate-300 uppercase tracking-widest">Active Debaters</span>
+              <span className="font-headline text-2xl font-bold text-secondary-container">
+                {policy.activeDebaters.toLocaleString()}
+              </span>
+            </div>
+            <div className="bg-white/10 border border-white/10 rounded-lg p-4">
+              <span className="block font-label text-xs text-slate-300 uppercase tracking-widest">Argument Split</span>
+              <span className="font-headline text-xl font-bold text-secondary-container">
+                {forArguments.length} For / {againstArguments.length} Against
+              </span>
             </div>
           </div>
         </section>
 
-        <section className="bg-surface-container-low rounded-xl p-8 mb-10 border border-outline-variant/20">
+        <section className="bg-surface-container-low rounded-xl p-8 mb-10 border border-outline-variant/20 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 className="text-2xl font-semibold">AI Debate Summary</h2>
             <button
@@ -274,16 +284,16 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
 
           {summary && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold mb-2">FOR</h3>
+              <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-5">
+                <h3 className="font-label text-xs uppercase tracking-widest text-emerald-700 mb-3">FOR</h3>
                 <ul className="list-disc pl-5 space-y-2 text-sm">
                   {summary.strongest_for.map((point, idx) => (
                     <li key={`for-${idx}`}>{point}</li>
                   ))}
                 </ul>
               </div>
-              <div>
-                <h3 className="font-semibold mb-2">AGAINST</h3>
+              <div className="bg-rose-50 border border-rose-100 rounded-lg p-5">
+                <h3 className="font-label text-xs uppercase tracking-widest text-rose-700 mb-3">AGAINST</h3>
                 <ul className="list-disc pl-5 space-y-2 text-sm">
                   {summary.strongest_against.map((point, idx) => (
                     <li key={`against-${idx}`}>{point}</li>
@@ -294,7 +304,7 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           )}
         </section>
 
-        <section className="bg-white rounded-xl shadow p-8 mb-10">
+        <section className="bg-surface-container-lowest rounded-xl shadow p-8 mb-10 border border-outline-variant/20">
           <h2 className="text-2xl font-semibold mb-4">Add Argument</h2>
           <form onSubmit={handleCreateArgument} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -338,14 +348,14 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
             <button
               type="submit"
               disabled={isCreatingArgument || !backendPolicyId}
-              className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60"
+              className="bg-primary text-white px-4 py-2 rounded-lg disabled:opacity-60 hover:bg-primary-container transition-colors"
             >
               {isCreatingArgument ? 'Posting...' : 'Post Argument'}
             </button>
           </form>
         </section>
 
-        <section className="bg-white rounded-xl shadow p-8 mb-10">
+        <section className="bg-white rounded-xl shadow p-8 mb-10 border border-outline-variant/20">
           <h2 className="text-2xl font-semibold mb-6">Structured Arguments</h2>
           {argumentError && (
             <p className="text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg p-3 mb-4">
@@ -355,23 +365,104 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           {localArguments.length === 0 ? (
             <p className="text-sm text-on-surface-variant">No arguments yet for this policy.</p>
           ) : (
-            <div className="space-y-4">
-              {localArguments.map((arg) => (
-                <article key={arg.id} className="border border-outline-variant/20 rounded-lg p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <h3 className="font-label text-xs uppercase tracking-widest text-emerald-700">For ({forArguments.length})</h3>
+                </div>
+                {forArguments.map((arg) => (
+                  <article key={arg.id} className="border border-emerald-100 bg-emerald-50/40 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs uppercase tracking-wider text-emerald-700">FOR</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => void handleVote(arg.id, 1)}
+                          className="text-xs px-2 py-1 rounded border border-emerald-200 hover:bg-white"
+                        >
+                          ▲ {arg.upvotes}
+                        </button>
+                        <button
+                          onClick={() => void handleVote(arg.id, -1)}
+                          className="text-xs px-2 py-1 rounded border border-emerald-200 hover:bg-white"
+                        >
+                          ▼ {arg.downvotes}
+                        </button>
+                      </div>
+                    </div>
+                    <h3 className="font-semibold mb-1">{arg.claim}</h3>
+                    <p className="text-sm text-on-surface-variant">{arg.reasoning}</p>
+                    <div className="mt-4">
+                      <button
+                        onClick={() => void toggleArgumentComments(arg.id)}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        {expandedArgumentId === arg.id ? 'Hide comments' : 'Show comments'}
+                      </button>
+                    </div>
+
+                    {expandedArgumentId === arg.id && (
+                      <div className="mt-4 border-t border-outline-variant/20 pt-4">
+                        {loadingCommentsByArgument[arg.id] ? (
+                          <p className="text-xs text-on-surface-variant">Loading comments...</p>
+                        ) : (
+                          <>
+                            <div className="space-y-2 mb-3">
+                              {(commentsByArgument[arg.id] ?? []).map((comment) => (
+                                <div key={comment.id} className="bg-white p-2 rounded text-sm border border-outline-variant/20">
+                                  {comment.body}
+                                </div>
+                              ))}
+                              {(commentsByArgument[arg.id] ?? []).length === 0 && (
+                                <p className="text-xs text-on-surface-variant">No comments yet.</p>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                value={newCommentByArgument[arg.id] ?? ''}
+                                onChange={(event) =>
+                                  setNewCommentByArgument((prev) => ({
+                                    ...prev,
+                                    [arg.id]: event.target.value,
+                                  }))
+                                }
+                                className="flex-1 border border-outline-variant/30 rounded px-2 py-1 text-sm"
+                                placeholder="Add a comment"
+                              />
+                              <button
+                                onClick={() => void handleCreateComment(arg.id)}
+                                className="text-xs bg-primary text-white px-3 py-1 rounded"
+                              >
+                                Post
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                  <h3 className="font-label text-xs uppercase tracking-widest text-rose-700">Against ({againstArguments.length})</h3>
+                </div>
+                {againstArguments.map((arg) => (
+                  <article key={arg.id} className="border border-rose-100 bg-rose-50/40 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs uppercase tracking-wider text-on-surface-variant">
-                      {arg.side.toUpperCase()}
-                    </span>
+                    <span className="text-xs uppercase tracking-wider text-rose-700">AGAINST</span>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => void handleVote(arg.id, 1)}
-                        className="text-xs px-2 py-1 rounded border border-outline-variant/30 hover:bg-surface-container-low"
+                        className="text-xs px-2 py-1 rounded border border-rose-200 hover:bg-white"
                       >
                         ▲ {arg.upvotes}
                       </button>
                       <button
                         onClick={() => void handleVote(arg.id, -1)}
-                        className="text-xs px-2 py-1 rounded border border-outline-variant/30 hover:bg-surface-container-low"
+                        className="text-xs px-2 py-1 rounded border border-rose-200 hover:bg-white"
                       >
                         ▼ {arg.downvotes}
                       </button>
@@ -394,12 +485,12 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                         <p className="text-xs text-on-surface-variant">Loading comments...</p>
                       ) : (
                         <>
-                          <div className="space-y-2 mb-3">
-                            {(commentsByArgument[arg.id] ?? []).map((comment) => (
-                              <div key={comment.id} className="bg-surface-container-low p-2 rounded text-sm">
-                                {comment.body}
-                              </div>
-                            ))}
+                            <div className="space-y-2 mb-3">
+                              {(commentsByArgument[arg.id] ?? []).map((comment) => (
+                                <div key={comment.id} className="bg-white p-2 rounded text-sm border border-outline-variant/20">
+                                  {comment.body}
+                                </div>
+                              ))}
                             {(commentsByArgument[arg.id] ?? []).length === 0 && (
                               <p className="text-xs text-on-surface-variant">No comments yet.</p>
                             )}
@@ -428,7 +519,8 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
                     </div>
                   )}
                 </article>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </section>

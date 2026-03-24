@@ -28,12 +28,21 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState('all');
 
+  const matchesFilter = (domain: string, filter: string) => {
+    const normalizedDomain = domain.toLowerCase();
+    const normalizedFilter = filter.toLowerCase();
+
+    if (normalizedFilter === 'healthcare') {
+      return normalizedDomain === 'healthcare' || normalizedDomain === 'health';
+    }
+
+    return normalizedDomain === normalizedFilter;
+  };
+
   const filteredPolicies =
     activeFilter === 'all'
       ? policies
-      : policies.filter(
-          (policy) => policy.domain.toLowerCase() === activeFilter.toLowerCase()
-        );
+      : policies.filter((policy) => matchesFilter(policy.domain, activeFilter));
 
   return (
     <div className="bg-surface text-on-surface font-sans selection:bg-secondary-container selection:text-on-secondary-container">

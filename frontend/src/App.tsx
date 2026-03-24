@@ -40,6 +40,24 @@ function App() {
     }
   };
 
+  const domainFromPolicy = (policy: Policy): string => {
+    const text = `${policy.slug} ${policy.title} ${policy.question}`.toLowerCase();
+
+    if (text.includes('housing') || text.includes('rent') || text.includes('planning')) {
+      return 'Housing';
+    }
+    if (text.includes('education') || text.includes('school') || text.includes('skills')) {
+      return 'Education';
+    }
+    if (text.includes('nhs') || text.includes('health') || text.includes('hospital')) {
+      return 'Healthcare';
+    }
+    if (text.includes('climate') || text.includes('carbon') || text.includes('emission')) {
+      return 'Environment';
+    }
+    return 'Economy';
+  };
+
   const mappedPolicies: PolicyCardData[] = useMemo(
     () =>
       policies.map((policy, index) => {
@@ -51,13 +69,13 @@ function App() {
           id: policy.id,
           title: policy.title,
           description: policy.description ?? policy.question,
-          domain: 'Policy',
+          domain: domainFromPolicy(policy),
           status: statusFromBackend(policy.status),
           statusLabel: statusLabelFromBackend(policy.status),
           citations,
           activeDebaters,
-          isFeatured: index === 0,
-          isPrimary: index === 3,
+          isFeatured: policy.slug.includes('national-housing-targets') || index === 0,
+          isPrimary: policy.slug.includes('universal-basic-income'),
         };
       }),
     [policies, argumentsByPolicyId],
