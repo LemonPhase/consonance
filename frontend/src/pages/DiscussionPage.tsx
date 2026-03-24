@@ -4,19 +4,21 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { ChatBox } from '../components/ChatBox';
 
-interface DiscussionPageProps {
-  policy: PolicyCardData;
-  onBack: () => void;
-}
-
 interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   text: string;
 }
 
-export const DiscussionPage: React.FC<DiscussionPageProps> = ({ policy, onBack }) => {
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+interface DiscussionPageProps {
+  policy: PolicyCardData;
+  onBack: () => void;
+  initialChatHistory: ChatMessage[];
+  onChatHistoryChange: (policyId: string, history: ChatMessage[]) => void;
+}
+
+export const DiscussionPage: React.FC<DiscussionPageProps> = ({ policy, onBack, initialChatHistory, onChatHistoryChange }) => {
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>(initialChatHistory);
 
   const handleChatSubmit = (query: string) => {
     const userMessage: ChatMessage = {
@@ -31,7 +33,11 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({ policy, onBack }
       text: `Simulated AI response for policy "${policy.title}": ${query}`,
     };
 
-    setChatHistory((prev) => [...prev, userMessage, assistantMessage]);
+    setChatHistory((prev) => {
+      const next = [...prev, userMessage, assistantMessage];
+      onChatHistoryChange(policy.id, next);
+      return next;
+    });
   };
 
   return (

@@ -10,6 +10,7 @@ type View = 'main' | 'discussion';
 function App() {
   const [currentView, setCurrentView] = useState<View>('main');
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyCardData | null>(null);
+  const [chatHistoryByPolicy, setChatHistoryByPolicy] = useState<Record<string, { id: string; role: 'user' | 'assistant'; text: string }[]>>({});
 
   const openPolicyDiscussion = (policyId: string) => {
     const policy = ALL_POLICIES.find((p) => p.id === policyId) || null;
@@ -28,7 +29,14 @@ function App() {
       <Header currentView={currentView} onViewChange={setCurrentView} />
       {currentView === 'main' && <ArchivePage onOpenDiscussion={openPolicyDiscussion} />}
       {currentView === 'discussion' && selectedPolicy && (
-        <DiscussionPage policy={selectedPolicy} onBack={backToMain} />
+        <DiscussionPage
+          policy={selectedPolicy}
+          onBack={backToMain}
+          initialChatHistory={chatHistoryByPolicy[selectedPolicy.id] ?? []}
+          onChatHistoryChange={(policyId, history) =>
+            setChatHistoryByPolicy((prev) => ({ ...prev, [policyId]: history }))
+          }
+        />
       )}
       {currentView === 'discussion' && !selectedPolicy && (
         <main className="min-h-screen pt-24 pb-20 px-8 max-w-7xl mx-auto">
