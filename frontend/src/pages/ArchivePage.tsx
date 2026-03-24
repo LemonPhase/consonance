@@ -69,7 +69,7 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({
         )}
 
         {!isLoading && !errorMessage && (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start auto-rows-fr">
             {filteredPolicies.map((policy) => (
               <PolicyCard
                 key={policy.id}

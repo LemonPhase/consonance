@@ -75,7 +75,7 @@ function App() {
           citations,
           activeDebaters,
           isFeatured: policy.slug.includes('national-housing-targets') || index === 0,
-          isPrimary: policy.slug.includes('universal-basic-income'),
+          isPrimary: false,
         };
       }),
     [policies, argumentsByPolicyId],
