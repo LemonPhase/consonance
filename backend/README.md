@@ -1,4 +1,4 @@
-# Consonance Backend (MVP)
+# Consonance Backend
 
 FastAPI backend for the Consonance MVP.
 
@@ -8,57 +8,66 @@ FastAPI backend for the Consonance MVP.
 - SQLAlchemy (async)
 - SQLite
 - Pydantic v2
-- Optional OpenAI summary generation
+- OpenAI integration for summaries/Q&A (optional)
 
-## Quick start
+## Requirements
 
-1. Create env file:
+- Python 3.11+
+- `uv` (recommended for dependency and run management)
+
+## Quick Start
 
 ```bash
 cp .env.example .env
-```
-
-2. Sync dependencies with uv:
-
-```bash
 uv sync --extra dev
-```
-
-3. Run the API:
-
-```bash
+uv run python seed.py
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-Health check: `GET http://localhost:8000/healthz`
+Local URLs:
+- API root: `http://127.0.0.1:8000/`
+- Docs: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/healthz`
 
-If you prefer an isolated in-project virtual env, run:
+Optional in-project virtualenv workflow:
 
 ```bash
 uv venv
 uv sync --extra dev
 ```
 
-## Seed demo data
+## Environment Variables
 
-```bash
-uv run python seed.py
-```
-
-This inserts sample policies and arguments if the database is empty.
-
-## Environment variables
+Defined in `.env.example`:
 
 - `DATABASE_URL` (default: `sqlite+aiosqlite:///./consonance.db`)
 - `OPENAI_API_KEY` (optional)
 - `OPENAI_MODEL` (default: `gpt-4o-mini`)
 - `FRONTEND_ORIGIN` (default: `http://localhost:3000`)
-- `FRONTEND_ORIGINS` (optional CSV, e.g. `http://localhost:3000,http://127.0.0.1:3000`)
+- `FRONTEND_ORIGINS` (optional CSV override, e.g. `http://localhost:3000,http://127.0.0.1:3000`)
 
-If `OPENAI_API_KEY` is missing, summary generation uses a deterministic fallback ranker.
+Notes:
+- if `OPENAI_API_KEY` is missing, AI features use fallback logic
+- current auth dependency is mocked (`mock-user-001`) for write endpoints
 
-## API surface (MVP)
+## Data and Migrations
 
+- default DB file: `backend/consonance.db`
+- SQLAlchemy models: `app/models/`
+- Alembic config/migrations: `alembic/`
+
+Common migration commands:
+
+```bash
+uv run alembic revision --autogenerate -m "your message"
+uv run alembic upgrade head
+uv run alembic downgrade -1
+```
+
+## API Surface
+
+- `GET /`
+- `GET /healthz`
 - `GET /v1/policies`
 - `POST /v1/policies`
 - `GET /v1/policies/{policy_id}`
@@ -72,31 +81,32 @@ If `OPENAI_API_KEY` is missing, summary generation uses a deterministic fallback
 - `POST /v1/sources`
 - `POST /v1/policies/{policy_id}/summaries/generate`
 - `GET /v1/policies/{policy_id}/summaries/latest`
+- `POST /v1/policies/{policy_id}/ask`
 
-## Tests
+Use `http://127.0.0.1:8000/docs` for request/response schemas.
 
-Run:
+## Development Commands
 
-```bash
-uv run pytest
-```
+- `uv sync --extra dev` - install dependencies
+- `uv run uvicorn app.main:app --reload --port 8000` - run dev server
+- `uv run python seed.py` - seed sample data
+- `uv run pytest` - run tests
 
-## Alembic migrations
+## Project Structure
 
-Create revision from models:
-
-```bash
-uv run alembic revision --autogenerate -m "init"
-```
-
-Apply latest migration:
-
-```bash
-uv run alembic upgrade head
-```
-
-Rollback one migration:
-
-```bash
-uv run alembic downgrade -1
+```text
+backend/
+├── app/
+│   ├── main.py
+│   ├── config.py
+│   ├── database.py
+│   ├── deps.py
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   └── services/
+├── alembic/
+├── tests/
+├── pyproject.toml
+└── seed.py
 ```
