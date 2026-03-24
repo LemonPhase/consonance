@@ -96,6 +96,13 @@ export interface PolicySummary {
   is_active: boolean;
 }
 
+export interface PolicyChatAnswer {
+  answer: string;
+  supporting_argument_ids: string[];
+  model_name: string;
+  used_fallback: boolean;
+}
+
 export interface CursorPage<T> {
   items: T[];
   next_cursor: string | null;

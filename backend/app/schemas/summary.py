@@ -7,6 +7,17 @@ class GenerateSummaryRequest(BaseModel):
     max_points_per_side: int = 5
 
 
+class AskPolicyRequest(BaseModel):
+    query: str
+
+
+class AskPolicyResponse(BaseModel):
+    answer: str
+    supporting_argument_ids: list[str]
+    model_name: str
+    used_fallback: bool
+
+
 class PolicySummaryRead(BaseModel):
     id: str
     policy_id: str

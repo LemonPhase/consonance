@@ -4,6 +4,7 @@ import {
   CursorPage,
   DebateSide,
   Policy,
+  PolicyChatAnswer,
   PolicySummary,
 } from '@/types';
 
@@ -88,4 +89,11 @@ export async function generateSummary(policyId: string): Promise<PolicySummary> 
 
 export async function getLatestSummary(policyId: string): Promise<PolicySummary | null> {
   return request<PolicySummary | null>(`/v1/policies/${policyId}/summaries/latest`);
+}
+
+export async function askPolicyQuestion(policyId: string, query: string): Promise<PolicyChatAnswer> {
+  return request<PolicyChatAnswer>(`/v1/policies/${policyId}/ask`, {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+  });
 }

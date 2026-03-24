@@ -544,7 +544,10 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
           )}
 
           {showCreateForm && (
-            <form onSubmit={handleCreateArgument} className="space-y-4 mb-8 bg-surface-container-low rounded-lg p-5 border border-outline-variant/20">
+            <form
+              onSubmit={handleCreateArgument}
+              className="space-y-4 mb-8 bg-surface-container-low rounded-lg p-5 border border-outline-variant/20"
+            >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-on-surface-variant mb-2">Side</label>
