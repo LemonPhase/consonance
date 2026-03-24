@@ -65,6 +65,15 @@ function App() {
         const activeDebaters = new Set(args.map((arg) => arg.author_user_id)).size;
         const citations = args.length;
 
+        const supportCount = args.filter((arg) => arg.side === 'for').length;
+        const opposeCount = args.filter((arg) => arg.side === 'against').length;
+        const total = Math.max(1, supportCount + opposeCount);
+        const supportPercent = Math.round((supportCount / total) * 100);
+        const opposePercent = Math.round((opposeCount / total) * 100);
+
+        const sourceLabel = `${policy.title} Evidence Dossier`;
+        const sourceUrl = `https://example.org/policies/${policy.slug}`;
+
         return {
           id: policy.id,
           title: policy.title,
@@ -76,6 +85,17 @@ function App() {
           activeDebaters,
           isFeatured: policy.slug.includes('national-housing-targets') || index === 0,
           isPrimary: false,
+          sourceLabel,
+          sourceUrl,
+          partyPositions: [
+            { party: 'Labour', stance: 'support', percent: Math.min(92, supportPercent + 8) },
+            { party: 'Conservative', stance: 'oppose', percent: Math.min(92, opposePercent + 6) },
+            {
+              party: 'Liberal Democrats',
+              stance: supportPercent >= opposePercent ? 'mixed' : 'neutral',
+              percent: Math.max(35, Math.min(70, Math.round((supportPercent + opposePercent) / 2))),
+            },
+          ],
         };
       }),
     [policies, argumentsByPolicyId],

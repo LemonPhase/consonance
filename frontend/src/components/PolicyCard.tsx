@@ -12,6 +12,13 @@ export interface PolicyCardData {
   activeDebaters: number;
   isFeatured?: boolean;
   isPrimary?: boolean;
+  sourceLabel?: string;
+  sourceUrl?: string;
+  partyPositions?: Array<{
+    party: string;
+    stance: 'support' | 'oppose' | 'mixed' | 'neutral';
+    percent: number;
+  }>;
 }
 
 interface PolicyCardProps {
@@ -208,6 +215,18 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
         {policy.description}
       </p>
 
+      {policy.sourceLabel && policy.sourceUrl && (
+        <a
+          href={policy.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mb-4 inline-flex items-center gap-2 text-xs text-secondary hover:text-primary transition-colors"
+        >
+          {policy.sourceLabel}
+          <span>↗</span>
+        </a>
+      )}
+
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-surface-container-low p-3 rounded-lg">
           <span className="block font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
@@ -224,6 +243,36 @@ export const PolicyCard: React.FC<PolicyCardProps> = ({ policy, onViewDebate }) 
           </span>
         </div>
       </div>
+
+      {policy.partyPositions && policy.partyPositions.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {policy.partyPositions.map((position) => {
+            const barColor =
+              position.stance === 'support'
+                ? 'bg-emerald-500'
+                : position.stance === 'oppose'
+                  ? 'bg-rose-500'
+                  : position.stance === 'mixed'
+                    ? 'bg-amber-400'
+                    : 'bg-slate-400';
+
+            return (
+              <div key={`${policy.id}-${position.party}`}>
+                <div className="flex items-center justify-between text-[11px] mb-1">
+                  <span className="text-on-surface-variant">{position.party}</span>
+                  <span className="text-primary font-semibold">{position.percent}%</span>
+                </div>
+                <div className="h-1.5 bg-surface-container rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${barColor} rounded-full`}
+                    style={{ width: `${Math.max(4, Math.min(100, position.percent))}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <button
         onClick={() => onViewDebate?.(policy.id)}
