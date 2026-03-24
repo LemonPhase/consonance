@@ -1,0 +1,15 @@
+.DS_Store
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+.venv/
+venv/
+
+backend/.env
+backend/consonance.db
+
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
