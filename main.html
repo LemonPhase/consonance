@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Consonance | The Digital Hansard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,700;1,400;1,700&amp;family=Inter:wght@400;500;600&amp;family=Work+Sans:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#dadada",
+              "surface-container": "#eeeeee",
+              "primary-fixed": "#d6e3ff",
+              "secondary": "#735c00",
+              "tertiary-container": "#3d1500",
+              "inverse-surface": "#2f3131",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f9f9f9",
+              "surface-container-high": "#e8e8e8",
+              "on-primary-container": "#708ab5",
+              "on-tertiary-container": "#b97958",
+              "surface": "#f9f9f9",
+              "surface-container-highest": "#e2e2e2",
+              "on-surface": "#1a1c1c",
+              "surface-variant": "#e2e2e2",
+              "surface-container-low": "#f3f3f3",
+              "on-primary": "#ffffff",
+              "on-secondary-container": "#745c00",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#2d476f",
+              "on-tertiary-fixed-variant": "#6c391d",
+              "on-secondary-fixed-variant": "#574500",
+              "on-primary-fixed": "#001b3d",
+              "error": "#ba1a1a",
+              "secondary-fixed-dim": "#e9c349",
+              "secondary-fixed": "#ffe088",
+              "primary-container": "#002147",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f1f1f1",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "secondary-container": "#fed65b",
+              "on-background": "#1a1c1c",
+              "outline-variant": "#c4c6cf",
+              "outline": "#74777f",
+              "background": "#f9f9f9",
+              "primary-fixed-dim": "#aec7f6",
+              "tertiary": "#180500",
+              "inverse-primary": "#aec7f6",
+              "surface-container-lowest": "#ffffff",
+              "primary": "#000a1e",
+              "on-tertiary-fixed": "#341100",
+              "surface-tint": "#465f88",
+              "on-secondary-fixed": "#241a00",
+              "tertiary-fixed-dim": "#ffb691",
+              "tertiary-fixed": "#ffdbcb"
+            },
+            fontFamily: {
+              "headline": ["Newsreader", "serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Work Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .elevation-tonal-layering {
+        box-shadow: none;
+      }
+      .bg-shift-surface-to-container-low {
+        background-color: #f3f3f3;
+      }
+      body {
+        background-color: #f9f9f9;
+        color: #1a1c1c;
+      }
+    </style>
+</head>
+<body class="font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-[#000a1e] dark:bg-[#000a1e] docked full-width top-0 z-50 shadow-none flex justify-between items-center w-full px-8 py-4 max-w-none">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-serif italic text-white dark:text-white">Consonance</span>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-serif font-bold text-lg Newsreader tracking-tight text-slate-300 hover:text-white transition-colors" href="#">Debates</a>
+<a class="font-serif font-bold text-lg Newsreader tracking-tight text-[#fed65b] border-b-2 border-[#735c00] pb-1" href="#">Archive</a>
+<a class="font-serif font-bold text-lg Newsreader tracking-tight text-slate-300 hover:text-white transition-colors" href="#">Library</a>
+<a class="font-serif font-bold text-lg Newsreader tracking-tight text-slate-300 hover:text-white transition-colors" href="#">Proposals</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-md font-label font-medium scale-95 active:opacity-80 transition-transform">
+                New Proposal
+            </button>
+<div class="flex items-center gap-4 text-white">
+<span class="material-symbols-outlined cursor-pointer hover:bg-white/10 rounded-md transition-all p-1">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-white/10 rounded-md transition-all p-1">account_circle</span>
+</div>
+</div>
+</header>
+<main class="min-h-screen pt-24 pb-20 px-8 max-w-7xl mx-auto">
+<!-- Hero Section -->
+<header class="mb-16 space-y-4">
+<h1 class="font-headline text-5xl md:text-6xl text-primary font-bold tracking-tight">
+                The Digital Hansard: Active Policy Discourse
+            </h1>
+<p class="font-body text-xl text-on-surface-variant max-w-3xl leading-relaxed">
+                Structured debate where factual claims are evidence-checked and disagreement is mapped.
+            </p>
+</header>
+<!-- Filters -->
+<div class="flex items-center gap-4 mb-12 overflow-x-auto pb-4 no-scrollbar">
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-primary text-white transition-colors">All</button>
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">Housing</button>
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">Education</button>
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">Healthcare</button>
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">Economy</button>
+<button class="px-6 py-2 rounded-full font-label text-sm font-medium bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">Environment</button>
+</div>
+<!-- Asymmetric Bento Grid of Policy Cards -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+<!-- Card 1: National Housing Targets (Featured) -->
+<div class="md:col-span-8 bg-surface-container-lowest p-8 flex flex-col justify-between min-h-[400px] group transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">Domain</span>
+<span class="font-body font-semibold text-primary">Housing</span>
+</div>
+<div>
+<div class="inline-flex items-center gap-2 bg-amber-50 text-amber-800 px-3 py-1 rounded-full mb-6">
+<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+<span class="font-label text-xs font-bold uppercase tracking-tighter">Active Expert Disagreement</span>
+</div>
+<h2 class="font-headline text-4xl font-bold text-primary mb-6 group-hover:text-secondary transition-colors cursor-pointer">National Housing Targets</h2>
+<p class="font-body text-lg text-on-surface-variant max-w-xl mb-8 leading-relaxed">
+                        A critical examination of proposed mandatory quotas versus local planning autonomy, analyzing current supply chain constraints and long-term affordability metrics.
+                    </p>
+</div>
+<div class="flex flex-wrap items-end justify-between gap-6">
+<div class="flex gap-12">
+<div>
+<span class="block font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Citations</span>
+<span class="font-headline text-2xl font-bold text-primary">1,204</span>
+</div>
+<div>
+<span class="block font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Active Debaters</span>
+<span class="font-headline text-2xl font-bold text-primary">892</span>
+</div>
+</div>
+<button class="bg-secondary-fixed text-on-secondary-fixed px-8 py-3 rounded-lg font-label font-bold flex items-center gap-2 hover:bg-secondary-container transition-all group/btn">
+                        View Debate
+                        <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: SPM Subject Performance Streaming -->
+<div class="md:col-span-4 bg-surface-container-low p-8 h-full flex flex-col border-l-4 border-emerald-500/20">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">Education</span>
+<div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full mb-4 w-fit">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label text-xs font-bold uppercase tracking-tighter">Broadly Settled (Empirical)</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary mb-4 leading-tight">SPM Subject Performance Streaming</h3>
+<p class="font-body text-sm text-on-surface-variant mb-8 flex-grow">
+                    Mapping the empirical outcomes of ability-based grouping against cross-jurisdictional educational datasets.
+                </p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between border-b border-outline-variant/20 pb-2">
+<span class="font-label text-xs text-on-surface-variant uppercase">Citations</span>
+<span class="font-body font-bold text-primary">450</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/20 pb-2">
+<span class="font-label text-xs text-on-surface-variant uppercase">Active Debaters</span>
+<span class="font-body font-bold text-primary">210</span>
+</div>
+</div>
+<button class="w-full py-3 border border-primary text-primary font-label font-bold hover:bg-primary hover:text-white transition-colors">
+                    View Debate
+                </button>
+</div>
+<!-- Card 3: NHS Private Tutoring Subsidies -->
+<div class="md:col-span-4 bg-surface-container-lowest p-8 flex flex-col shadow-sm border-t-2 border-primary">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">Healthcare</span>
+<div class="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-3 py-1 rounded-full mb-4 w-fit">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span class="font-label text-xs font-bold uppercase tracking-tighter">Highly Uncertain (Predictive)</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary mb-4">NHS Private Tutoring Subsidies</h3>
+<p class="font-body text-sm text-on-surface-variant mb-8 flex-grow">
+                    Modeling the impact of external staffing support on permanent workforce retention and service delivery speeds.
+                </p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="font-headline text-xl font-bold text-primary">98</span>
+<span class="font-label text-[10px] text-on-surface-variant uppercase tracking-tighter">Citations</span>
+</div>
+<button class="text-secondary font-label font-bold flex items-center gap-1 hover:underline">
+                        Explore <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Card 4: Universal Basic Income Pilot -->
+<div class="md:col-span-8 bg-primary text-white p-12 relative overflow-hidden flex flex-col md:flex-row gap-12 items-center">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-secondary-container via-transparent to-transparent"></div>
+<div class="relative z-10 flex-1">
+<span class="font-label text-xs uppercase tracking-widest text-slate-400 mb-2 block">Economy</span>
+<div class="inline-flex items-center gap-2 bg-white/10 text-white px-3 py-1 rounded-full mb-6">
+<span class="material-symbols-outlined text-sm">balance</span>
+<span class="font-label text-xs font-bold uppercase tracking-tighter">Opinion / Value Judgment</span>
+</div>
+<h3 class="font-headline text-4xl font-bold mb-4">Universal Basic Income Pilot</h3>
+<p class="font-body text-slate-300 text-lg leading-relaxed mb-8">
+                        The definitive debate on post-work socioeconomic frameworks, evaluating trials from Finland to Kenya.
+                    </p>
+<div class="flex gap-10">
+<div>
+<span class="font-headline text-3xl font-bold text-secondary-container">3,410</span>
+<span class="block font-label text-xs text-slate-400 uppercase tracking-widest">Citations</span>
+</div>
+<div>
+<span class="font-headline text-3xl font-bold text-secondary-container">1,200</span>
+<span class="block font-label text-xs text-slate-400 uppercase tracking-widest">Active Debaters</span>
+</div>
+</div>
+</div>
+<div class="relative z-10 flex flex-col gap-4 w-full md:w-auto">
+<button class="bg-secondary-fixed text-on-secondary-fixed px-10 py-4 rounded-lg font-label font-extrabold hover:scale-105 transition-transform whitespace-nowrap shadow-xl">
+                        View Full Debate
+                    </button>
+<p class="text-[10px] text-slate-400 font-label uppercase text-center tracking-widest">Updated 2 hours ago</p>
+</div>
+</div>
+</div>
+<!-- Visual Decorative Element (Asymmetric background texture) -->
+<div class="fixed top-0 right-0 -z-10 w-1/3 h-screen pointer-events-none opacity-5">
+<svg class="h-full w-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="text-secondary" d="M100 0 L100 100 L0 100 Z" fill="currentColor"></path>
+</svg>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<footer class="md:hidden fixed bottom-0 left-0 right-0 bg-[#000a1e] text-white flex justify-around items-center py-4 z-50">
+<div class="flex flex-col items-center gap-1 opacity-60">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="text-[10px] font-label">Trending</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#fed65b]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">policy</span>
+<span class="text-[10px] font-label">Archive</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-60">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-[10px] font-label">Library</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-60">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-label">Account</span>
+</div>
+</footer>
+</body></html>

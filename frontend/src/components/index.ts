@@ -7,3 +7,6 @@ export { EngagementMetrics } from './EngagementMetrics';
 export { StatusBadge } from './StatusBadge';
 export { MaterialIcon } from './MaterialIcon';
 export { Footer } from './Footer';
+export { PolicyCard } from './PolicyCard';
+export { FilterBar } from './FilterBar';
+export { HeroSection } from './HeroSection';

@@ -3,38 +3,35 @@ import { MaterialIcon } from './MaterialIcon';
 import { NavLink } from '../types/index';
 
 interface HeaderProps {
-  navLinks?: NavLink[];
+  currentView: 'main' | 'discussion';
+  onViewChange: (view: 'main' | 'discussion') => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ 
-  navLinks = [
-    { label: 'Debates', href: '#' },
-    { label: 'Archive', href: '#' },
-    { label: 'Library', href: '#' },
-    { label: 'Live', href: '#' },
-    { label: 'Proposals', href: '#', isActive: true },
-  ]
-}) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
+  const navLinks = [
+    { label: 'Ongoing Policies', view: 'main' as const },
+    { label: 'Discussion', view: 'discussion' as const },
+  ];
   return (
     <header className="bg-slate-50 dark:bg-[#000a1e] fixed w-full top-0 z-50">
       <div className="flex justify-between items-center w-full px-8 py-4 max-w-[1440px] mx-auto">
         <div className="flex items-center gap-8">
           <span className="text-2xl font-serif tracking-tight text-[#000a1e] dark:text-white">
-            The Digital Hansard
+            Consonance
           </span>
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
-              <a
+              <button
                 key={link.label}
-                className={`transition-colors font-label ${
-                  link.isActive
-                    ? 'text-[#002147] dark:text-[#fed65b] font-semibold border-b-2 border-[#735c00] pb-1'
+                className={`transition-colors font-label px-3 py-1 rounded ${
+                  currentView === link.view
+                    ? 'text-[#002147] dark:text-[#fed65b] font-semibold border-b-2 border-[#735c00]'
                     : 'text-slate-600 dark:text-slate-400 hover:text-[#002147] dark:hover:text-white'
                 }`}
-                href={link.href}
+                onClick={() => onViewChange(link.view)}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
         </div>
