@@ -3,6 +3,7 @@ import { PolicyCardData } from '../components/PolicyCard';
 import { Footer } from '../components/Footer';
 import { ChatBox } from '../components/ChatBox';
 import {
+  askPolicyQuestion,
   castVote,
   createArgument,
   createComment,
@@ -38,6 +39,8 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
   onArgumentsChange,
 }) => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>(initialChatHistory);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [isAskingPolicy, setIsAskingPolicy] = useState(false);
   const [summary, setSummary] = useState<PolicySummary | null>(null);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -81,24 +84,57 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backendPolicyId]);
 
-  const handleChatSubmit = (query: string) => {
+  const handleChatSubmit = async (query: string) => {
+    if (!backendPolicyId) {
+      setChatError('No backend policy mapped for this discussion.');
+      return;
+    }
+
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
+      return;
+    }
+
+    setChatError(null);
     const userMessage: ChatMessage = {
       id: `u-${Date.now()}`,
       role: 'user',
-      text: query,
-    };
-
-    const assistantMessage: ChatMessage = {
-      id: `a-${Date.now()}`,
-      role: 'assistant',
-      text: `Simulated AI response for policy "${policy.title}": ${query}`,
+      text: trimmedQuery,
     };
 
     setChatHistory((prev) => {
-      const next = [...prev, userMessage, assistantMessage];
+      const next = [...prev, userMessage];
       onChatHistoryChange(policy.id, next);
       return next;
     });
+
+    try {
+      setIsAskingPolicy(true);
+      const response = await askPolicyQuestion(backendPolicyId, trimmedQuery);
+
+      const citationsText = response.supporting_argument_ids.length
+        ? `\n\nRelated argument IDs: ${response.supporting_argument_ids.join(', ')}`
+        : '';
+      const modelText = response.used_fallback
+        ? '\n\nGenerated in fallback mode (no API key configured yet).'
+        : `\n\nModel: ${response.model_name}`;
+
+      const assistantMessage: ChatMessage = {
+        id: `a-${Date.now()}`,
+        role: 'assistant',
+        text: `${response.answer}${citationsText}${modelText}`,
+      };
+
+      setChatHistory((prev) => {
+        const next = [...prev, assistantMessage];
+        onChatHistoryChange(policy.id, next);
+        return next;
+      });
+    } catch (error) {
+      setChatError(error instanceof Error ? error.message : 'Failed to get policy answer');
+    } finally {
+      setIsAskingPolicy(false);
+    }
   };
 
   const handleGenerateSummary = async () => {
@@ -528,6 +564,14 @@ export const DiscussionPage: React.FC<DiscussionPageProps> = ({
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Live discussion & AI assistant</h2>
           <ChatBox onSubmit={handleChatSubmit} />
+          {isAskingPolicy && (
+            <p className="mt-3 text-sm text-on-surface-variant">Assistant is analyzing policy context...</p>
+          )}
+          {chatError && (
+            <p className="mt-3 text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg p-3">
+              {chatError}
+            </p>
+          )}
           <div className="mt-6 space-y-3">
             {chatHistory.map((msg) => (
               <div
